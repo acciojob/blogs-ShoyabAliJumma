@@ -9,6 +9,7 @@ import com.driver.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,34 +20,41 @@ public class BlogService {
     BlogRepository blogRepository1;
 
     @Autowired
-    ImageService imageService1;
-
-    @Autowired
     UserRepository userRepository1;
 
-    public List<Blog> showBlogs(){
-        //find all blogs
-
-    }
-
-    public void createAndReturnBlog(Integer userId, String title, String content) {
+    public Blog createAndReturnBlog(Integer userId, String title, String content)  {
         //create a blog at the current time
+//        Instant currentInstant = Instant.now();
+        Date currentDate = new Date();
+        Blog blog = new Blog();
+        User user = userRepository1.findById(userId).get();
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setUser(user);
+        blog.setPubDate(currentDate);
+        List<Blog> blogList = user.getBlogList();
+        blogList.add(blog);
+        user.setBlogList(blogList);
+        userRepository1.save(user);
 
-        //updating the blog details
-
-        //Updating the userInformation and changing its blogs
-
-    }
-
-    public Blog findBlogById(int blogId){
-        //find a blog
-    }
-
-    public void addImage(Integer blogId, String description, String dimensions){
-        //add an image to the blog after creating it
+        return blog;
     }
 
     public void deleteBlog(int blogId){
         //delete blog and corresponding images
+//        Blog blog = blogRepository1.findById(blogId).get();
+//        User user = blog.getUser();
+//        List<Blog> blogList = user.getBlogList();
+//        for(Blog i : blogList){
+//            if(i.getId()==blogId){
+//                blogList.remove(i);
+//                break;
+//            }
+//        }
+//        user.setBlogList(blogList);
+//        userRepository1.save(user);
+        blogRepository1.deleteById(blogId);
+
+
     }
 }
